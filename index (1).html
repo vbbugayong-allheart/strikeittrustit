@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strike It, Trust It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: premium, focused, a little cinematic; it should make golfers want to go and practise
+   IDEA: a high-end product site, a top-down green and a half-circle selector to pick what to work on
+   PICTURE: a top-down putting green at night with huge outlined headline across it
+   COLOUR and TYPE: near-black, white, baby blue accent, yellow for highlights, green only on the course; Anton + Inter
+   LAYOUT: glass nav, full-bleed hero, arc selector overlapping it, project bar, dark sections and cards */
+:root{color-scheme:dark;--bg:#0b0d10;--bg2:#111418;--card:#161a1f;--line:#262c33;--ink:#f2f5f7;--mute:#9aa6b1;
+--blue:#8fcaf2;--blue2:#5aa9e0;--flag:#ffd23f;--green:#2f8a4c}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Anton",Impact,sans-serif;font-weight:400;line-height:1;text-transform:uppercase;letter-spacing:.01em;text-wrap:balance;margin:0}
+h2{font-size:clamp(36px,5vw,60px)}
+h3{font-size:22px;letter-spacing:.02em;margin-bottom:8px}
+p{margin:0 0 12px;max-width:68ch}
+a{color:var(--blue)}
+html{scroll-padding-top:76px;scroll-behavior:smooth}
+.band{padding:clamp(40px,6vw,88px) max(5vw,16px)}
+.wrap{max-width:1180px;margin:0 auto}
+.alt{background:var(--bg2)}
+.scroll{overflow-x:auto}
+
+/* nav */
+header.top{position:sticky;top:0;z-index:10;background:rgba(11,13,16,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+header.top .in{display:flex;align-items:center;gap:20px;max-width:1280px;margin:0 auto;padding:6px max(5vw,16px)}
+.logo{flex:none;font:400 20px "Anton",Impact,sans-serif;letter-spacing:.04em;color:#fff;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--blue);box-shadow:0 0 12px var(--blue)}
+nav.links{display:flex;gap:2px;overflow-x:auto}
+nav.links a{flex:none;color:#cfd6dc;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.02em;padding:12px 12px;min-height:44px;display:flex;align-items:center;border-radius:8px}
+nav.links a:hover,nav.links a:focus-visible{color:#fff;background:rgba(255,255,255,.07);outline:none}
+
+/* hero */
+.hero{position:relative;height:clamp(460px,78vh,720px);overflow:hidden;background:#07090b}
+.hero svg.course{position:absolute;inset:0;width:100%;height:100%}
+.hero h1{position:absolute;left:0;right:0;top:clamp(28px,7vh,72px);text-align:center;font-size:clamp(64px,15vw,210px);line-height:.88;color:rgba(255,255,255,.08);-webkit-text-stroke:2px rgba(255,255,255,.9);padding:0 12px;pointer-events:none}
+.hero h1 span{display:block}
+.hero .sub{position:absolute;left:0;right:0;bottom:clamp(150px,26vh,230px);text-align:center;color:#d5dde3;font-size:15px;padding:0 20px;margin:0 auto}
+
+/* arc selector */
+.arcwrap{position:relative;margin:-210px auto 0;max-width:820px;padding:0 16px;z-index:3}
+.arc{position:relative;aspect-ratio:2/1;border-radius:999px 999px 0 0;background:radial-gradient(ellipse at 50% 100%,rgba(11,13,16,.97) 0 55%,rgba(11,13,16,.88) 75%,rgba(11,13,16,.55));border:1px solid rgba(255,255,255,.08);border-bottom:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:grid;justify-items:center;gap:6px;background:none;border:0;color:#cfd6dc;cursor:pointer;font:600 12px Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;min-width:64px;min-height:64px;padding:4px}
+.node .dot{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.18);transition:transform .25s,box-shadow .25s}
+.node small{font-weight:500;letter-spacing:0;text-transform:none;color:var(--mute);font-size:12px;margin-top:-4px}
+.node[aria-pressed=true]{color:#fff}
+.node[aria-pressed=true] .dot{transform:scale(1.22);border-color:#fff;box-shadow:0 0 0 4px rgba(143,202,242,.25),0 8px 24px rgba(0,0,0,.6)}
+.node:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:12px}
+.center{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:min(440px,70%);text-align:center}
+.center h3{font-size:clamp(22px,3vw,30px)}
+.center p{color:var(--mute);font-size:14px;margin:0 auto 14px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+
+.btn{font:600 15px Inter,sans-serif;min-height:44px;padding:10px 20px;border-radius:99px;border:0;background:var(--blue);color:#0b0d10;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn:hover{background:#b3dcf8}
+.btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25)}
+.btn.ghost:hover{background:rgba(255,255,255,.06)}
+.btn:focus-visible{outline:2px solid var(--flag);outline-offset:2px}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* project bar */
+.bar{max-width:1180px;margin:22px auto 0;padding:0 max(5vw,16px)}
+.bar .in{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr)) auto;gap:8px;align-items:stretch;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+.bar .t{display:flex;align-items:center;gap:8px;padding:0 10px;font:600 12px Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.bar .t i{width:8px;height:8px;border-radius:50%;background:var(--flag)}
+.field{background:#0f1215;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.field small{display:block;font-size:12px;color:var(--mute)}
+.field b{font-weight:600;font-size:14px}
+.bar .in>.btn{align-self:center;justify-content:center}
+
+/* content */
+.head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.head .k{color:var(--blue);font-size:14px;font-weight:600;margin-bottom:10px}
+.head p{color:var(--mute);margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.quote{font-size:clamp(20px,2.4vw,26px);font-weight:600;line-height:1.35;border-left:3px solid var(--flag);padding-left:18px;margin:0 0 24px;max-width:none}
+.label{font-size:13px;font-weight:600;color:var(--mute);margin-bottom:6px}
+ul{margin:0;padding-left:20px}li{margin-bottom:6px}
+.note{font-size:14px;color:var(--mute);margin-top:12px}
+.card p,.card li{color:#cfd6dc}
+.grid4 .card h3{color:var(--blue)}
+
+/* games */
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:28px;align-items:start}
+.game>div:first-child p{color:#cfd6dc}
+.play{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:500 14px Inter,sans-serif;min-height:44px;padding:8px 16px;border-radius:99px;border:1px solid var(--line);background:#0f1215;color:#cfd6dc;cursor:pointer}
+.seg button[aria-pressed=true]{background:#fff;border-color:#fff;color:#0b0d10}
+.seg button:focus-visible{outline:2px solid var(--blue)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.track{position:relative;height:44px;border-radius:10px;background:linear-gradient(90deg,#8a3a2c 0 20%,#a8862c 20% 35%,#245f39 35% 65%,#a8862c 65% 80%,#8a3a2c 80%);overflow:hidden}
+.track::after{content:"";position:absolute;left:44%;width:12%;top:0;bottom:0;background:#3fa35d;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+.marker{position:absolute;top:-4px;bottom:-4px;width:6px;margin-left:-3px;background:#fff;border-radius:3px;box-shadow:0 0 12px rgba(255,255,255,.8);z-index:2}
+.tl{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:6px}
+.face{display:block;width:100%;max-width:420px;height:auto;margin:10px auto 0}
+.score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.score div{background:#0f1215;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.score b{display:block;font:400 32px "Anton",Impact,sans-serif;line-height:1}
+.score small{font-size:13px;color:var(--mute)}
+.msg{min-height:52px;font-weight:500;margin:12px 0 0;padding:12px 14px;border-radius:10px;background:#0f1215;border-left:3px solid var(--blue);max-width:none;color:#e6ecf0}
+.green{display:block;width:100%;max-width:340px;height:auto;margin:0 auto;touch-action:none}
+.meter{height:12px;border-radius:99px;background:#0f1215;overflow:hidden;border:1px solid var(--line)}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--flag),#e0573f)}
+.hr{display:flex;align-items:center;gap:8px;font-weight:600}
+.hr svg{width:22px;height:22px;fill:#e0573f}
+.pulse{animation:beat var(--beat,.8s) ease-in-out infinite}
+@keyframes beat{50%{transform:scale(1.25)}}
+
+.breath{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+.orb{width:min(260px,70vw);aspect-ratio:1;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#d8eefc,#5aa9e0 55%,#1d4f78);color:#0b0d10;font:400 22px "Anton",Impact,sans-serif;text-transform:uppercase;text-align:center;padding:24px;transform:scale(.62);transition:transform 4s ease-in-out;box-shadow:0 0 80px rgba(143,202,242,.25)}
+.steps{list-style:none;padding:0;margin:12px 0 0}
+.steps li{margin:0 0 8px}
+.steps label{display:flex;gap:12px;align-items:center;min-height:44px;padding:10px 14px;border-radius:10px;background:var(--card);border:1px solid var(--line);cursor:pointer;color:#cfd6dc}
+.steps input{width:20px;height:20px;accent-color:#8fcaf2}
+
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:15px}
+th,td{text-align:left;padding:14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#1c2127;color:var(--blue);font-weight:600;font-size:13px}
+td{color:#dfe5ea}
+td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.inspire{position:relative;overflow:hidden;text-align:center}
+.inspire h2{font-size:clamp(44px,8vw,110px);line-height:.9;color:rgba(255,255,255,.06);-webkit-text-stroke:1.5px #fff;margin-bottom:22px}
+.inspire p{color:#cfd6dc;font-size:18px;margin:0 auto 22px}
+footer{border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+footer p{max-width:none;margin:0}
+
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}html{scroll-behavior:auto}.orb{transition-duration:.01s}.node .dot{transition:none}}
+@media(max-width:980px){.bar .in{grid-template-columns:repeat(2,minmax(0,1fr))}.bar .t{grid-column:1/-1;padding:4px 4px 2px}.bar .btn{grid-column:1/-1;justify-content:center}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.grid2,.game,.breath{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){
+ header.top .in{gap:8px}.logo{font-size:17px}
+ .arcwrap{margin-top:-120px}
+ .arc{aspect-ratio:auto;border-radius:24px 24px 0 0;padding:18px 12px 18px;display:grid;gap:14px}
+ .nodes{display:flex;justify-content:space-between;gap:4px}
+ .node{position:static;transform:none;min-width:0;flex:1;font-size:11px;letter-spacing:.02em}
+ .node .dot{width:36px;height:36px}.node small{display:none}
+ .center{position:static;transform:none;width:auto}
+ .hero .sub{bottom:140px}
+ .grid4{grid-template-columns:minmax(0,1fr)}
+ .bar .in{grid-template-columns:minmax(0,1fr)}
+ table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:8.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;font-weight:600;color:var(--mute)}.stack td:empty{display:none}.stack td.num{text-align:start}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<header class="top"><div class="in">
+  <a class="logo" href="#top"><i></i>Strike It, Trust It</a>
+  <nav class="links" aria-label="Website sections">
+    <a href="#goal">The project</a>
+    <a href="#strike">Strike game</a>
+    <a href="#putt">Pressure putt</a>
+    <a href="#reset">Reset routine</a>
+    <a href="#research">Research</a>
+    <a href="#stats">Stats</a>
+    <a href="#journal">Journal</a>
+  </nav>
+</div></header>
+
+<section class="hero" id="top" aria-label="Introduction">
+  <svg class="course" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="g1" cx="52%" cy="46%" r="60%"><stop offset="0" stop-color="#2f7a4b"/><stop offset=".7" stop-color="#1f5636"/><stop offset="1" stop-color="#143a25"/></radialGradient>
+      <radialGradient id="fr" cx="52%" cy="46%" r="65%"><stop offset="0" stop-color="#1c4b2f"/><stop offset="1" stop-color="#0f2a1b"/></radialGradient>
+      <radialGradient id="vig" cx="50%" cy="45%" r="70%"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#07090b" stop-opacity=".95"/></radialGradient>
+      <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#0b0d10" stop-opacity="0"/><stop offset="1" stop-color="#0b0d10"/></linearGradient>
+      <radialGradient id="sand" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#d9c99a"/><stop offset="1" stop-color="#9c8a5c"/></radialGradient>
+      <clipPath id="gc"><ellipse cx="820" cy="430" rx="560" ry="330"/></clipPath>
+      <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+    </defs>
+    <rect width="1600" height="900" fill="#0d1a12"/>
+    <ellipse cx="820" cy="440" rx="700" ry="430" fill="url(#fr)"/>
+    <ellipse cx="820" cy="430" rx="560" ry="330" fill="url(#g1)"/>
+    <g clip-path="url(#gc)" opacity=".07" fill="#fff">
+      <rect x="200" y="0" width="90" height="900" transform="rotate(-18 820 430)"/><rect x="380" y="0" width="90" height="900" transform="rotate(-18 820 430)"/>
+      <rect x="560" y="0" width="90" height="900" transform="rotate(-18 820 430)"/><rect x="740" y="0" width="90" height="900" transform="rotate(-18 820 430)"/>
+      <rect x="920" y="0" width="90" height="900" transform="rotate(-18 820 430)"/><rect x="1100" y="0" width="90" height="900" transform="rotate(-18 820 430)"/>
+      <rect x="1280" y="0" width="90" height="900" transform="rotate(-18 820 430)"/>
+    </g>
+    <path d="M1290 640 C1380 600 1470 640 1450 720 C1430 790 1300 800 1250 750 C1210 710 1230 665 1290 640Z" fill="#0a0d0b" opacity=".5" filter="url(#soft)" transform="translate(10 14)"/>
+    <path d="M1290 640 C1380 600 1470 640 1450 720 C1430 790 1300 800 1250 750 C1210 710 1230 665 1290 640Z" fill="url(#sand)"/>
+    <path d="M250 210 C320 160 430 190 420 250 C410 310 300 320 260 290 C230 268 220 232 250 210Z" fill="url(#sand)" opacity=".9"/>
+    <path d="M720 520 Q800 470 935 405" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round" opacity=".55"/>
+    <line x1="950" y1="398" x2="1120" y2="470" stroke="#000" stroke-width="7" opacity=".35" filter="url(#soft)"/>
+    <path d="M1120 470 l40 -2 l-12 22z" fill="#000" opacity=".3" filter="url(#soft)"/>
+    <ellipse cx="950" cy="398" rx="17" ry="14" fill="#06120b"/>
+    <ellipse cx="950" cy="396" rx="17" ry="12" fill="none" stroke="#d9e6dc" stroke-width="2" opacity=".5"/>
+    <circle cx="950" cy="397" r="5" fill="#ffd23f"/>
+    <circle cx="726" cy="530" r="18" fill="#000" opacity=".4" filter="url(#soft)"/>
+    <circle cx="718" cy="522" r="13" fill="#f4f6f5"/>
+    <circle cx="714" cy="518" r="4" fill="#fff"/>
+    <rect width="1600" height="900" fill="url(#vig)"/>
+    <rect width="1600" height="900" fill="url(#fade)"/>
+  </svg>
+  <h1><span>Strike it.</span><span>Trust it.</span></h1>
+  <p class="sub">A golf personal project on ball contact and the mental game</p>
+</section>
+
+<div class="arcwrap">
+  <div class="arc">
+    <div class="nodes" role="group" aria-label="Choose what to explore">
+      <button class="node" type="button" style="--x:10%;--y:86%" data-i="0" aria-pressed="true"><span class="dot" style="background:radial-gradient(circle at 35% 30%,#e9eef1,#7d8a93 60%,#3c464d)"></span>Strike<small>Contact</small></button>
+      <button class="node" type="button" style="--x:24.5%;--y:40%" data-i="1" aria-pressed="false"><span class="dot" style="background:radial-gradient(circle at 35% 30%,#7fd39a,#2f8a4c 60%,#164228)"></span>Putt<small>Pressure</small></button>
+      <button class="node" type="button" style="--x:50%;--y:18%" data-i="2" aria-pressed="false"><span class="dot" style="background:radial-gradient(circle at 35% 30%,#d8eefc,#5aa9e0 60%,#1d4f78)"></span>Reset<small>Mindset</small></button>
+      <button class="node" type="button" style="--x:75.5%;--y:40%" data-i="3" aria-pressed="false"><span class="dot" style="background:radial-gradient(circle at 35% 30%,#ffffff,#cfd6dc 60%,#7d8a93)"></span>Research<small>Learning</small></button>
+      <button class="node" type="button" style="--x:90%;--y:86%" data-i="4" aria-pressed="false"><span class="dot" style="background:radial-gradient(circle at 35% 30%,#fff3b8,#ffd23f 60%,#a8862c)"></span>Stats<small>Progress</small></button>
+    </div>
+    <div class="center" aria-live="polite">
+      <h3 id="cTitle">Strike it pure · timing game</h3>
+      <p id="cText">Hit the sweet spot as the pressure rises, and see how nerves scatter your contact.</p>
+      <div class="btns"><a class="btn" id="cGo" href="#strike">Play now →</a><a class="btn ghost" href="#goal">The project</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="bar"><div class="in">
+  <div class="t"><i></i>Project at a glance</div>
+  <div class="field"><small>Goal</small><b>A consistent game</b></div>
+  <div class="field"><small>Focus</small><b>Ball contact + mental game</b></div>
+  <div class="field"><small>Product</small><b>Interactive website</b></div>
+  <div class="field"><small>Status</small><b>Work in progress</b></div>
+  <a class="btn" href="#journal">Read journal →</a>
+</div></div>
+
+<main>
+<section class="band" id="goal"><div class="wrap">
+  <div class="head"><div><div class="k">The project</div><h2>Title, description &amp; goal</h2></div></div>
+  <p class="quote">Build a more consistent golf game by improving my ball contact and my mental game, and create an interactive website that inspires other golfers to do the same.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Why I changed topic</h3>
+      <p>My first idea was to design a sportswear shirt. Once I started, I realised I wasn't motivated by it, and a project I don't care about is hard to keep going for months. Golf is something I already spend time on and genuinely want to get better at, so I switched.</p>
+      <p>My short game is already pretty decent. What makes my scores jump around is inconsistent ball contact (fat and thin shots) and losing my focus after a bad shot or when I feel pressure. Those are the two things I'm working on.</p>
+    </div>
+    <div class="card">
+      <h3>What I'm making</h3>
+      <ul>
+        <li><b>Product:</b> this interactive website, part process journal and part training tool.</li>
+        <li><b>Inside it:</b> two games that train timing and composure under pressure, a breathing reset routine, my research, my stats and a weekly journal.</li>
+        <li><b>Purpose:</b> to inspire golfers of any level to work on their contact and their mindset, and to show that improvement comes from habits, not luck.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section class="band alt" id="learning"><div class="wrap">
+  <div class="head"><div><div class="k">Learning</div><h2>Learning goal &amp; outcome</h2></div></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="label">Learning goal</div>
+      <p class="quote" style="margin-bottom:16px">Learn how to strike the ball consistently and how to manage pressure and emotions on the course, and learn to share that through an interactive website.</p>
+      <p>I want to understand what causes fat and thin shots and how to control the low point of my swing. I also want to learn practical mental skills, like a pre-shot routine, breathing and resetting after a bad shot, and how to design a website people actually enjoy using.</p>
+    </div>
+    <div class="card">
+      <div class="label">Intended outcome</div>
+      <ul>
+        <li>More solid, centered strikes and fewer fat or thin shots.</li>
+        <li>A pre-shot routine and a reset routine I use every round.</li>
+        <li>Fewer "blow-up" holes after a mistake, and steadier scores.</li>
+        <li>A finished interactive website that visitors say inspires them.</li>
+      </ul>
+      <p class="note">ATL skills: research, self-management (routine and emotional control), communication (website design), reflection (weekly journal).</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" id="strike"><div class="wrap">
+  <div class="head"><div><div class="k">Play · Ball contact</div><h2>Strike it pure</h2></div></div>
+  <div class="game">
+    <div>
+      <p>Good contact is all about timing and hitting the center of the face. Press <b>Swing</b> when the marker is in the green sweet spot. Each strike leaves a mark on the clubface.</p>
+      <p>Turn up the pressure and watch what happens: the marker speeds up and your strikes start to scatter, just like on the course when you're nervous. Hit <b>Take a breath</b> to calm down for your next three swings.</p>
+      <div class="label">Pressure</div>
+      <div class="seg" id="sLvl" role="group" aria-label="Pressure level">
+        <button type="button" data-l="0" aria-pressed="true">Range session</button>
+        <button type="button" data-l="1" aria-pressed="false">Club competition</button>
+        <button type="button" data-l="2" aria-pressed="false">Final hole</button>
+      </div>
+    </div>
+    <div class="play">
+      <div class="track" id="track" aria-hidden="true"><div class="marker" id="marker"></div></div>
+      <div class="tl"><span>Heel</span><span>Sweet spot</span><span>Toe</span></div>
+      <div class="row">
+        <button class="btn" id="swing" type="button">Swing</button>
+        <button class="btn ghost" id="sBreathe" type="button">Take a breath</button>
+        <button class="btn ghost" id="sReset" type="button">New bucket</button>
+      </div>
+      <svg class="face" viewBox="0 0 400 170" role="img" aria-label="Clubface showing where each strike landed">
+        <defs><linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3ccd2"/><stop offset="1" stop-color="#7f8b93"/></linearGradient></defs>
+        <path d="M30 40 Q30 18 60 16 L350 12 Q382 12 384 46 L380 120 Q376 150 340 152 L64 156 Q30 156 30 126Z" fill="url(#steel)" stroke="#4d585f" stroke-width="3"/>
+        <g stroke="#6d7980" stroke-width="2"><line x1="60" y1="50" x2="350" y2="46"/><line x1="58" y1="68" x2="354" y2="64"/><line x1="58" y1="86" x2="354" y2="82"/><line x1="58" y1="104" x2="354" y2="100"/><line x1="60" y1="122" x2="350" y2="118"/></g>
+        <circle cx="205" cy="84" r="22" fill="none" stroke="#245f39" stroke-width="3" stroke-dasharray="5 4"/>
+        <g id="marks"></g>
+      </svg>
+      <div class="score"><div><b id="sPure">0</b><small>Pure</small></div><div><b id="sSolid">0</b><small>Solid</small></div><div><b id="sLeft">10</b><small>Balls left</small></div></div>
+      <p class="msg" id="sMsg" aria-live="polite">10 balls in the bucket. Pick a pressure level and press Swing (or the space bar).</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band alt" id="putt"><div class="wrap">
+  <div class="head"><div><div class="k">Play · Mental game</div><h2>Pressure putt</h2></div></div>
+  <div class="game">
+    <div>
+      <p>Hold <b>Putt</b> to build power and let go to hit. Get the pace right and the ball drops. Each putt is a new distance.</p>
+      <p>Pressure changes everything. Choose <b>Putt to win</b> and your heart rate jumps. A faster heart rate makes the power meter shake and fill faster, and every miss pushes it higher. <b>Take a breath</b> brings it back down, just like a real breathing routine on the green.</p>
+      <div class="label">Situation</div>
+      <div class="seg" id="pLvl" role="group" aria-label="Putting situation">
+        <button type="button" data-l="0" aria-pressed="true">Practice green</button>
+        <button type="button" data-l="1" aria-pressed="false">Putt to win</button>
+      </div>
+      <div class="row"><div class="hr"><svg viewBox="0 0 24 24" class="pulse" id="heart" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2.1 0 3.8 1.2 5.4 3 1.6-1.8 3.3-3 5.4-3 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg><span id="bpm">72 bpm</span></div><span class="note" style="margin:0" id="pCount">0 of 0 holed</span></div>
+    </div>
+    <div class="play">
+      <svg class="green" id="greenSvg" viewBox="0 0 300 420" role="img" aria-label="Putting green with hole and ball">
+        <defs><radialGradient id="gg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#2f7a4b"/><stop offset="1" stop-color="#1a4a2e"/></radialGradient></defs>
+        <rect x="6" y="6" width="288" height="408" rx="140" fill="url(#gg)" stroke="#143a25" stroke-width="6"/>
+        <g opacity=".08" stroke="#fff" stroke-width="18"><line x1="40" y1="0" x2="40" y2="420"/><line x1="110" y1="0" x2="110" y2="420"/><line x1="180" y1="0" x2="180" y2="420"/><line x1="250" y1="0" x2="250" y2="420"/></g>
+        <g id="holeG"><ellipse id="hole" cx="150" cy="80" rx="12" ry="9" fill="#06120b"/><line id="pin" x1="150" y1="80" x2="150" y2="20" stroke="#fff" stroke-width="3"/><path id="flag" d="M151 20 L186 30 L151 40Z" fill="#ffd23f"/></g>
+        <text id="dist" x="150" y="405" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="#e6ecf0">8 ft</text>
+        <circle id="pBall" cx="150" cy="370" r="8" fill="#fff" stroke="#c9d3cc" stroke-width="1.5"/>
+      </svg>
+      <div class="label" style="margin-top:12px">Power</div>
+      <div class="meter"><i id="pow"></i></div>
+      <div class="row">
+        <button class="btn" id="puttBtn" type="button">Hold to putt</button>
+        <button class="btn ghost" id="pBreathe" type="button">Take a breath</button>
+      </div>
+      <p class="msg" id="pMsg" aria-live="polite">Read the distance, take your time, then hold and release.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" id="reset"><div class="wrap">
+  <div class="head"><div><div class="k">Try it · Mindset</div><h2>The reset routine</h2></div></div>
+  <div class="breath">
+    <div class="orb" id="orb" aria-live="polite">Ready</div>
+    <div>
+      <p style="color:#cfd6dc">This is the routine I'm building to use after a bad shot or before a pressure shot. One round of box breathing takes 16 seconds: breathe in for 4, hold for 4, out for 4, hold for 4. Then go through the three steps.</p>
+      <div class="row"><button class="btn" id="orbGo" type="button">Start breathing</button></div>
+      <div class="label">Then, before the next shot</div>
+      <ul class="steps">
+        <li><label><input type="checkbox"> <span><b>See it.</b> Pick a small, exact target.</span></label></li>
+        <li><label><input type="checkbox"> <span><b>Feel it.</b> One rehearsal swing at the tempo you want.</span></label></li>
+        <li><label><input type="checkbox"> <span><b>Trust it.</b> Step in and swing without second-guessing.</span></label></li>
+      </ul>
+      <p class="note">Try it on your next round, whenever you feel frustrated or nervous.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band alt" id="research"><div class="wrap">
+  <div class="head"><div><div class="k">Research</div><h2>Contact and the mental game</h2></div><p>What I've found so far. Sources will be added as my research continues.</p></div>
+  <div class="grid4">
+    <div class="card"><h3>Low point control</h3><p>Fat and thin shots both come from the bottom of the swing arc being in the wrong place. Good iron players bottom out just after the ball.</p></div>
+    <div class="card"><h3>Centered strike</h3><p>Hitting the middle of the face gives more distance and straighter shots. Strike spray or foot powder shows exactly where you're making contact.</p></div>
+    <div class="card"><h3>Pressure and the body</h3><p>Nerves raise your heart rate and tighten muscles, which speeds up tempo and throws off contact. Slow breathing helps bring the body back to calm.</p></div>
+    <div class="card"><h3>Routine and reset</h3><p>A repeated pre-shot routine gives the mind something steady to focus on, and a reset routine stops one bad shot from turning into a bad hole.</p></div>
+  </div>
+</div></section>
+
+<section class="band" id="stats"><div class="wrap">
+  <div class="head"><div><div class="k">Progress</div><h2>Stats tracker</h2></div><p>Comparing my baseline with the end of the project.</p></div>
+  <table class="stack">
+    <thead><tr><th>Stat</th><th>Area</th><th>Baseline</th><th>Target</th><th>Final</th></tr></thead>
+    <tbody>
+      <tr><td>Solid strikes out of 10 (7-iron, strike spray)</td><td>Contact</td><td class="num">4 / 10</td><td class="num">7 / 10</td><td class="num">—</td></tr>
+      <tr><td>Fat or thin shots per round</td><td>Contact</td><td class="num">8</td><td class="num">4</td><td class="num">—</td></tr>
+      <tr><td>Pre-shot routine used</td><td>Mental</td><td class="num">—</td><td class="num">90% of shots</td><td class="num">—</td></tr>
+      <tr><td>Bogey or better on the hole after a double bogey</td><td>Mental</td><td class="num">30%</td><td class="num">60%</td><td class="num">—</td></tr>
+      <tr><td>Composure rating after each round (1–5)</td><td>Mental</td><td class="num">2.5</td><td class="num">4</td><td class="num">—</td></tr>
+      <tr><td>Score range over 5 rounds (best to worst)</td><td>Consistency</td><td class="num">12 strokes</td><td class="num">6 strokes</td><td class="num">—</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Sample numbers. Real baseline to be recorded Dec 1–7.</p>
+</div></section>
+
+<section class="band alt" id="journal"><div class="wrap">
+  <div class="head"><div><div class="k">Journal</div><h2>Weekly journal</h2></div></div>
+  <div class="card">
+    <div class="label">Week of Nov 20</div>
+    <h3>Switching topics and finding my real focus</h3>
+    <p>This week I dropped my sportswear shirt project and switched to golf. At first I thought I'd work on my short game, but when I looked honestly at my rounds, my short game is fine. My scores swing because of poor contact and because I get frustrated or nervous and let one bad shot turn into a bad hole.</p>
+    <p>I decided my website should be interactive, so visitors can feel what pressure does to timing, and I want it to inspire other golfers. Next steps: present at the work-in-progress fair, research low point control and mental skills, and record my baseline stats.</p>
+  </div>
+</div></section>
+
+<section class="band inspire"><div class="wrap">
+  <h2>Your next shot is the only one that matters.</h2>
+  <p>You don't need a perfect swing to play better golf. Solid contact and a calm mind are skills, and skills can be trained. Play the games, try the reset routine on your next round, and see what changes.</p>
+  <div class="btns"><a class="btn" href="#strike">Play again →</a></div>
+</div></section>
+</main>
+
+<footer class="band" style="padding-block:28px"><div class="wrap">
+  <p>Strike It, Trust It · Personal Project process journal · Work in progress</p>
+</div></footer>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function segInit(id,cb){const g=$(id);g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;for(const x of g.querySelectorAll('button'))x.setAttribute('aria-pressed',x===b);cb(+b.dataset.l)})}
+function breathe(btn,done){const t=btn.textContent;btn.disabled=true;btn.textContent='Breathe in…';setTimeout(()=>{btn.textContent='…and out';setTimeout(()=>{btn.textContent=t;btn.disabled=false;done()},2000)},2000)}
+
+/* ---------- Arc selector ---------- */
+const arcData=[
+ ['Strike it pure · timing game','Hit the sweet spot as the pressure rises, and see how nerves scatter your contact.','#strike','Play now →'],
+ ['Pressure putt · mental game','Hold, release, hole it. Then try it with your heart rate racing.','#putt','Play now →'],
+ ['Reset routine · 16 seconds','The breathing routine I use after a bad shot or before a big one.','#reset','Try it →'],
+ ['Research · what I learned','What actually causes fat and thin shots, and how pressure affects the body.','#research','Read it →'],
+ ['Stats · my progress','The numbers I track to prove my game is getting more consistent.','#stats','See stats →']];
+const nodes=document.querySelectorAll('.node');
+for(const n of nodes)n.addEventListener('click',()=>{const d=arcData[+n.dataset.i];for(const m of nodes)m.setAttribute('aria-pressed',m===n);
+  $('cTitle').textContent=d[0];$('cText').textContent=d[1];$('cGo').href=d[2];$('cGo').textContent=d[3]});
+
+/* ---------- Strike it pure ---------- */
+const speeds=[0.9,1.5,2.2],jit=[0,0.05,0.11],vert=[0.25,0.5,0.8];
+let lvl=0,pos=0,dir=1,calm=0,left=10,pure=0,solid=0,last=0;
+const marker=$('marker'),marks=$('marks'),sMsg=$('sMsg');
+function loop(t){if(!last)last=t;const dt=Math.min(.05,(t-last)/1000);last=t;
+  if(left>0){let v=speeds[lvl]*(calm>0?.6:1);pos+=dir*v*dt;if(pos>1){pos=1;dir=-1}if(pos<0){pos=0;dir=1}
+  let shake=lvl&&calm===0?Math.sin(t/40)*jit[lvl]*.35:0;marker.style.left=Math.max(0,Math.min(1,pos+shake))*100+'%'}
+  requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+function swing(){if(left<=0)return;
+  const j=calm>0?jit[lvl]*.3:jit[lvl];let x=Math.max(0,Math.min(1,pos+(Math.random()-.5)*2*j));
+  const vy=(Math.random()-.5)*2*(calm>0?vert[lvl]*.5:vert[lvl]);const off=x-.5;
+  let res,col;
+  if(Math.abs(off)<.06&&Math.abs(vy)<.5){res='Pure! Right out of the middle.';col='#3fa35d';pure++}
+  else if(Math.abs(off)<.15&&Math.abs(vy)<.6){res='Solid strike. Good contact.';col='#8fcaf2';solid++}
+  else if(Math.abs(vy)>=.6){res=vy>0?'Thin. Caught it low on the face.':'Fat. Hit the ground first.';col='#e0573f'}
+  else{res=off<0?'Off the heel.':'Off the toe.';col='#ffd23f'}
+  const cx=205+off*330,cy=84+vy*55;
+  marks.insertAdjacentHTML('beforeend',`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="7" fill="${col}" stroke="#0b0d10" stroke-width="2" opacity=".95"/>`);
+  left--;if(calm>0)calm--;
+  $('sPure').textContent=pure;$('sSolid').textContent=solid;$('sLeft').textContent=left;
+  if(left===0){const g=pure+solid;sMsg.textContent=`Bucket done: ${g} of 10 solid or better. `+(g>=7?'That is tour-level focus!':lvl?'Pressure is tough. Try taking a breath before your swings.':'Try a higher pressure level next.')}
+  else sMsg.textContent=res+(calm>0?` (calm for ${calm} more)`:'')}
+$('swing').addEventListener('click',swing);
+document.addEventListener('keydown',e=>{if(e.code!=='Space')return;const a=document.activeElement;if(a&&(a.id==='swing'||a.id==='puttBtn'||a.tagName==='INPUT'||a.tagName==='BUTTON'||a.tagName==='A'))return;
+  const r=$('strike').getBoundingClientRect();if(r.top<innerHeight*.6&&r.bottom>innerHeight*.4){e.preventDefault();swing()}});
+$('sBreathe').addEventListener('click',e=>breathe(e.currentTarget,()=>{calm=3;sMsg.textContent='Calm. Your next 3 swings will feel smoother.'}));
+$('sReset').addEventListener('click',()=>{left=10;pure=0;solid=0;marks.innerHTML='';$('sPure').textContent=0;$('sSolid').textContent=0;$('sLeft').textContent=10;sMsg.textContent='Fresh bucket. Commit to every swing.'});
+segInit('sLvl',l=>{lvl=l;calm=0;sMsg.textContent=['Range session: no pressure, just rhythm.','Club competition: people are watching. Stay smooth.','Final hole: one swing to win it. Breathe first.'][l]});
+
+/* ---------- Pressure putt ---------- */
+let mode=0,hr=72,holeY=80,holding=false,p=0,startT=0,rolling=false,made=0,tries=0,shownP=0;
+const ball=$('pBall'),pow=$('pow'),pMsg=$('pMsg'),btn=$('puttBtn'),BY=370,MAX=400;
+function setHr(v){hr=Math.max(64,Math.min(140,Math.round(v)));$('bpm').textContent=hr+' bpm';$('heart').style.setProperty('--beat',(60/hr).toFixed(2)+'s')}
+function newHole(){holeY=Math.round(40+Math.random()*190);$('hole').setAttribute('cy',holeY);$('pin').setAttribute('y1',holeY);$('pin').setAttribute('y2',holeY-60);$('flag').setAttribute('d',`M151 ${holeY-60} L186 ${holeY-50} L151 ${holeY-40}Z`);
+  ball.setAttribute('cy',BY);ball.setAttribute('r',8);ball.style.opacity=1;$('dist').textContent=Math.round((BY-holeY)/30*2.5)+' ft';pow.style.width='0%'}
+function wob(){return Math.max(0,hr-70)/420}
+function tick(t){if(!holding)return;const el=(t-startT)/1000;const rate=.55*(1+(hr-70)/90);p=Math.min(1,el*rate);
+  shownP=Math.max(0,Math.min(1,p+Math.sin(t/55)*wob()));pow.style.width=(shownP*100)+'%';requestAnimationFrame(tick)}
+function down(e){if(rolling||holding)return;if(e)e.preventDefault();holding=true;startT=performance.now();p=0;shownP=0;requestAnimationFrame(tick)}
+function up(){if(!holding)return;holding=false;hit(shownP)}
+function hit(power){rolling=true;tries++;const travel=power*MAX,need=BY-holeY,diff=travel-need;const inCup=Math.abs(diff)<=16;
+  const end=inCup?holeY:BY-travel;const d=reduce?1:1300;const t0=performance.now();
+  (function anim(t){const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);ball.setAttribute('cy',(BY+(end-BY)*e).toFixed(1));
+    if(k<1)return requestAnimationFrame(anim);
+    if(inCup){ball.setAttribute('r',5);ball.style.opacity=.35;made++;setHr(hr-(mode?4:2));
+      pMsg.textContent=['Holed it! Remember how it felt to trust your read.','In the middle! Pace was perfect.','Drained it. That is how you handle pressure.'][made%3]}
+    else{setHr(hr+(mode?9:3));pMsg.textContent=diff<0?'Short. Commit to your pace; firm beats fearful.':'Too firm. Pressure speeds us up. Breathe and smooth it out.'}
+    $('pCount').textContent=`${made} of ${tries} holed`;
+    setTimeout(()=>{rolling=false;newHole()},1300)})(performance.now())}
+btn.addEventListener('pointerdown',down);
+addEventListener('pointerup',up);addEventListener('pointercancel',up);
+btn.addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='Enter')&&!e.repeat){e.preventDefault();down()}});
+btn.addEventListener('keyup',e=>{if(e.code==='Space'||e.code==='Enter'){e.preventDefault();up()}});
+btn.addEventListener('contextmenu',e=>e.preventDefault());
+$('pBreathe').addEventListener('click',e=>breathe(e.currentTarget,()=>{setHr(hr-16);pMsg.textContent='Heart rate down. Read the putt, then trust it.'}));
+segInit('pLvl',l=>{mode=l;setHr(l?104:72);pMsg.textContent=l?'This putt wins the match. Feel that? Use your breathing.':'Practice green. Find your rhythm.'});
+setHr(72);newHole();
+
+/* ---------- Reset routine ---------- */
+const orb=$('orb'),go=$('orbGo');
+go.addEventListener('click',()=>{go.disabled=true;const ph=[['Breathe in',1],['Hold',1],['Breathe out',.62],['Hold',.62]];let i=0;
+  (function step(){if(i===4){orb.textContent='Ready. Pick your target.';go.disabled=false;go.textContent='Go again';return}
+    const [w,s]=ph[i];orb.style.transform=`scale(${s})`;let n=4;orb.textContent=w+' · '+n;
+    const iv=setInterval(()=>{n--;if(n>0)orb.textContent=w+' · '+n;else{clearInterval(iv);i++;step()}},1000)})()});
+}
+</script>
+</body>
+</html>
